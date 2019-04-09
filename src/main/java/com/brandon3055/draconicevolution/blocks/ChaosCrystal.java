@@ -91,47 +91,6 @@ public class ChaosCrystal extends BlockBCore implements ITileEntityProvider, IRe
         super.breakBlock(world, pos, state);
     }
 
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        if (placer instanceof EntityPlayer && ((EntityPlayer) placer).capabilities.isCreativeMode) {
-            TileEntity tile = world.getTileEntity(pos);
-            if (!world.isRemote && tile instanceof TileChaosCrystal) {
-                ((TileChaosCrystal) tile).setLockPos();
-                ((TileChaosCrystal) tile).guardianDefeated.value = true;
-            }
-        }
-        else {
-            placer.attackEntityFrom(punishment, Float.MAX_VALUE);
-        }
-    }
-
-    private static String[] naughtyList = new String[]{"item.blockMover", "tile.CardboardBox", "item.WandCasting"};
-    private static DamageSource punishment = new DamageSource("chrystalMoved").setDamageAllowedInCreativeMode().setDamageBypassesArmor().setDamageIsAbsolute();
-
-    @Override
-    public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-        List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(pos, pos.add(1, 1, 1)).grow(15, 15, 15));
-
-        for (EntityPlayer player : players) {
-            if (player.capabilities.isCreativeMode) {
-                return;
-            }
-            if (!player.getHeldItemMainhand().isEmpty()) {
-                for (String s : naughtyList) {
-                    if (player.getHeldItemMainhand().getUnlocalizedName().equals(s)) {
-                        player.attackEntityFrom(punishment, Float.MAX_VALUE);
-                    }
-                }
-            }
-            if (!player.getHeldItemOffhand().isEmpty()) {
-                for (String s : naughtyList) {
-                    if (player.getHeldItemOffhand().getUnlocalizedName().equals(s)) {
-                        player.attackEntityFrom(punishment, Float.MAX_VALUE);
-                    }
-                }
-            }
-        }
-    }
 
     //region Rendering
 
